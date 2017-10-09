@@ -2,7 +2,7 @@ Recent Changes
 --------------
 
 New Version:
-    - Works with SciPy 0.5.2
+    - Works with SciPy 1.0.0rc1
     - AUTO works on 64-bit machines
     
 Version 0.3.1:
