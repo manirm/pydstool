@@ -301,9 +301,9 @@ class BorderMethod(TestFunc):
 
     def setdata(self, A):
         """Note: p, q <= min(n,m)"""
-        self.data.Brand = 2*(random((A.shape[0],self.data.p))-0.5)
-        self.data.Crand = 2*(random((A.shape[1],self.data.q))-0.5)
-        self.data.D = zeros((self.data.q,self.data.p), float)
+        self.data.Brand = 2*random((A.shape[0],int(self.data.p)))-0.5
+        self.data.Crand = 2*random((A.shape[1],int(self.data.q)))-0.5
+        self.data.D = zeros((int(self.data.q),int(self.data.p)), float)
 
         if self.update:
             U, S, Vh = linalg.svd(A)
@@ -365,8 +365,8 @@ class BorderMethod(TestFunc):
         # V --> m, W --> n
         #print self.data
         MLU = linalg.lu_factor(c_[r_[A,transpose(self.data.C)], r_[self.data.B,self.data.D]])
-        V = linalg.lu_solve(MLU,r_[zeros((self.data.n,self.data.q), float), eye(self.data.q)])
-        W = linalg.lu_solve(MLU,r_[zeros((self.data.m,self.data.p), float), eye(self.data.p)],trans=1)
+        V = linalg.lu_solve(MLU,r_[zeros((int(self.data.n),int(self.data.q)), float), eye(int(self.data.q))])
+        W = linalg.lu_solve(MLU,r_[zeros((int(self.data.m),int(self.data.p)), float), eye(int(self.data.p))],trans=1)
 
         return V, W
 
@@ -378,7 +378,7 @@ class BiAltMethod(TestFunc):
         if self.data is None:
             self.data = args()
         n = len(self.F.coords)
-        self.data.P = zeros((n*(n-1)/2, n*(n-1)/2), float)
+        self.data.P = zeros((int(n*(n-1)/2), int(n*(n-1)/2)), float)
 
     def bialtprod(self, A, B):
         n = A.shape[0]
@@ -397,17 +397,17 @@ class BiAltMethod(TestFunc):
                 for r in range(1,n):
                     for s in range(r):
                         if r == q:
-                            self.data.P[p*(p-1)/2 + q][r*(r-1)/2 + s] = -1*A[p][s]
+                            self.data.P[p*(p-1)//2 + q][r*(r-1)//2 + s] = -1*A[p][s]
                         elif r != p and s == q:
-                            self.data.P[p*(p-1)/2 + q][r*(r-1)/2 + s] = A[p][r]
+                            self.data.P[p*(p-1)//2 + q][r*(r-1)//2 + s] = A[p][r]
                         elif r == p and s == q:
-                            self.data.P[p*(p-1)/2 + q][r*(r-1)/2 + s] = A[p][p] + A[q][q]
+                            self.data.P[p*(p-1)//2 + q][r*(r-1)//2 + s] = A[p][p] + A[q][q]
                         elif r == p and s != q:
-                            self.data.P[p*(p-1)/2 + q][r*(r-1)/2 + s] = A[q][s]
+                            self.data.P[p*(p-1)//2 + q][r*(r-1)//2 + s] = A[q][s]
                         elif s == p:
-                            self.data.P[p*(p-1)/2 + q][r*(r-1)/2 + s] = -1*A[q][r]
+                            self.data.P[p*(p-1)//2 + q][r*(r-1)//2 + s] = -1*A[q][r]
                         else:
-                            self.data.P[p*(p-1)/2 + q][r*(r-1)/2 + s] = 0
+                            self.data.P[p*(p-1)//2 + q][r*(r-1)//2 + s] = 0
         return self.data.P
 
 class AddTestFunction(Function):
@@ -478,7 +478,7 @@ class DiscreteMap(Function):
             n = self.n
             ind = list(range(n))
 
-        F_n = zeros((self.period, self.n), float)
+        F_n = zeros((self.period, int(self.n)), float)
         F_n[0] = X
         for k in range(1,self.period):
             F_n[k] = c_[[self.F(F_n[k-1])], [X[self.F.params]]][0]
@@ -772,9 +772,9 @@ class Hopf_Double_Bor_One(BorderMethod, BiAltMethod):
 
         self.data.Brand = 2*(random((A.shape[0],self.data.p))-0.5)
         self.data.Crand = 2*(random((A.shape[1],self.data.q))-0.5)
-        self.data.B = zeros((A.shape[0],self.data.p), float)
-        self.data.C = zeros((A.shape[1],self.data.q), float)
-        self.data.D = zeros((self.data.q,self.data.p), float)
+        self.data.B = zeros((A.shape[0],int(self.data.p)), float)
+        self.data.C = zeros((A.shape[1],int(self.data.q)), float)
+        self.data.D = zeros((int(self.data.q),int(self.data.p)), float)
 
         U, S, Vh = linalg.svd(A)
         self.data.b = U[:,-1:]
